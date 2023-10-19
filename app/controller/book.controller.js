@@ -1,5 +1,9 @@
 const Book = require("../models/book.model");
 
+const createBook = (req, res) => {
+    if(!req.body.author || !req.body.title){
+        res.status(400).send({ message: "Book Title & Author can not be empty."});
+    }
     const bookObj = new Book({
         title : req.body.title,
         author : req.body.author,
@@ -9,12 +13,6 @@ const Book = require("../models/book.model");
         quantity: req.body.quantity,
         img: req.body.img
     });
-
-
-    const createBook = (req, res) => {
-        if(!req.body.author || !req.body.title){
-            res.status(400).send({ message: "Book Title & Author can not be empty."});
-        }
     Book.create(bookObj, (err, data)=>{
         if(err){
             res.status(500).send({message: err.message || "Some error occured while creating Book"});
