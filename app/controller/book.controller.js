@@ -1,7 +1,8 @@
 const Book = require("../models/book.model");
 
 const createBook = (req, res) => {
-    if(!req.body.author || !req.body.title){
+    if(!req.body){
+    // if(!req.body.author || !req.body.title){
         res.status(400).send({ message: "Book Title & Author can not be empty."});
     }
     const bookObj = new Book({
