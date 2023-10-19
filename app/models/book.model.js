@@ -1,5 +1,5 @@
 const sql = require("./db")
-const Book = function(book){
+const Book = function(books){
     this.title = books.title;
     this.author = books.author;
     this.price = books.price;
