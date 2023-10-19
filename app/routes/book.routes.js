@@ -6,6 +6,6 @@ module.exports = (app)=>{
     router.post('/addbook',book_controller.createBook);
     router.get('/:id',book_controller.getBookId);
     router.delete('/:id',book_controller.deleteBook)
-    app.use("/api", router);
+    // app.use("/api", router);
     app.use("/api/auth", router);
 }; 
