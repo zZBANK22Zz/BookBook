@@ -17,7 +17,7 @@ const createBook = (req, res) => {
     Book.create(bookObj, (err, data)=>{
         if(err){
             res.status(500).send({message: err.message || "Some error occured while creating Book"});
-        }else res.send(data);
+        }else {res.send(data)};
     });
   };
 
