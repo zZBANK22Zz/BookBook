@@ -29,7 +29,7 @@ Review.getAll = (result) => {
 };
 
 Review.updateById = (id, data, result) => {
-    sql.query('UPDATE review SET restaurantId=?, score=?, review=? WHERE id=?', [data.book, data.score, data.review, id], (err, res) => {
+    sql.query('UPDATE review SET bookId=?, score=?, review=? WHERE id=?', [data.book, data.score, data.review, id], (err, res) => {
         if (err) {
             console.log('Error:', err);
             result(err, null);
