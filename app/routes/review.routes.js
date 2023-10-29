@@ -6,7 +6,7 @@ module.exports = (app) => {
     router.post('/add', review_controller.createReview);
     
     // Retrieve all reviews
-    router.get('/', review_controller.getAllReviews);
+    router.get('/allreview', review_controller.getAllReviews);
     
     // Update a review by ID
     router.put('/:id', review_controller.updateReview);
