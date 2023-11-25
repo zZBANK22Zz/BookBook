@@ -5,6 +5,7 @@ module.exports = (app)=>{
     router.get('/', book_controller.getAllBook);
     router.post('/add',book_controller.createBook);
     router.get('/:id',book_controller.getBookId);
+    router.put('/:id',book_controller.updateBook);
     router.delete('/:id',book_controller.deleteBook)
     app.use("/api/books", router);
 }; 

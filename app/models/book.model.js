@@ -1,12 +1,16 @@
 const sql = require("./db")
 const Book = function(books){
     this.title = books.title;
-    this.author = books.author;
+    this.language = books.language;
+    this.publication_date = books.publication_date
+    this.author_id = books.author_id;
     this.price = books.price;
-    this.descrip = books.descrip;
-    this.review = books.review;
-    this.quantity = books.quantity;
     this.img = books.img;
+    this.edition = books.edition;
+    this.status = books.status;
+    this.stock = books.stock;
+
+    //title=?, language=?, publication_date=?, author_id=?, price=?, img=?, edition=?, status=?, stock=?
 }
 Book.checkBook = (id, result)=>{
     sql.query(`SELECT * FROM books WHERE id = ${id}`,(err,res)=>{
@@ -46,6 +50,28 @@ Book.getAllBook = (result)=>{
         result(null, res);
     })
 };
+
+Book.updateBook = (id, data, result)=>{
+    // removeOldImage(id);
+    sql.query("UPDATE books SET title=?, language=?, publication_date=?, author_id=?, price=?, img=?, edition=?, status=?, stock=? WHERE id=?", 
+    [data.title, data.language, data.publication_date, data.author_id, data.price, data.img, data.edition, data.status, data.stock,  id], (err, res)=>{
+        // title=?, language=?, publication_date=?, author_id=?, price=?, img=?, edition=?, status=?, stock=?
+        if(err){
+            console.log("Error: " + err);
+            result(err, null);
+            return;
+        }
+        if(res.affectedRows == 0){
+            //NO any record update
+            result({kind: "not_found"}, null);
+            return;
+        }
+        console.log("Update book: " + {id: id, ...data});
+        result(null, {id: id, ...data});
+        return;
+    });
+};
+
 Book.deleteById = (id, result) => {
     sql.query('DELETE FROM books WHERE id = ?', id, (err, res) => {
         if (err) {
