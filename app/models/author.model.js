@@ -5,24 +5,22 @@ const bcrypt = require("bcryptjs/dist/bcrypt");
 const expireTime = "2h"; //token will expire in 2 hours
 const fs = require("fs");
 
-const User = function(user){
-    this.fullname = user.fullname;
-    this.email = user.email;
-    this.username = user.username;
-    this.password = user.password;
-    this.img = user.img;
-    this.role = null;
-    //role = null (user), 1 (admin)
+const author = function(author){
+    this.name = author.name;
+    this.description = author.description;
+    this.photo = author.photo;
+    this.dob = author.dob;
+    this.book_id = author.book_id;
 }
-User.checkUsername = (username, result)=>{
-    sql.query("SELECT * FROM users WHERE username='"+username+"'",(err,res)=>{
+author.checkAuthorname = (name, result)=>{
+    sql.query("SELECT * FROM authors WHERE name='"+name+"'",(err,res)=>{
         if(err){
             console.log("Error: " + err);
             result(err, null);
             return;
         }
         if(res.length){
-            console.log("Found username: " + res[0]);
+            console.log("Found authorname: " + res[0]);
             result(null, res[0]);
             return;
         }
@@ -30,46 +28,46 @@ User.checkUsername = (username, result)=>{
     });
 };
 
-User.create = (newUser, result)=>{
-    sql.query("INSERT INTO users SET ?", newUser, (err, res)=>{
+author.create = (newAuthor, result)=>{
+    sql.query("INSERT INTO authors SET ?", newAuthor, (err, res)=>{
         if(err){
             console.log("Query error: " + err);
             result(err, null);
             return;
         }
         const token = jwt.sign({id: res.insertId}, scKey.secret, {expiresIn: expireTime});
-        result(null, {id: res.insertId, ...newUser, accessToken: token});
-        console.log("Created user:", {id: res.insertId, ...newUser, accessToken: token});
+        result(null, {id: res.insertId, ...newAuthor, accessToken: token});
+        console.log("Created author:", {id: res.insertId, ...newAuthor, accessToken: token});
     });
 };
 
-User.loginModel = (account, result)=>{
-    sql.query("SELECT * FROM users WHERE username=?", [account.username], (err, res)=>{
+author.loginModel = (account, result)=>{
+    sql.query("SELECT * FROM authors WHERE name=?", [account.name], (err, res)=>{
         if(err){
             console.log("err:" + err);
             result(err, null);
             return;
         }
-        if(res.length){
-            const validPassword = bcrypt.compareSync(account.password, res[0].password);
-            if(validPassword){
-                const token = jwt.sign({id: res.insertId}, scKey.secret, {expiresIn: expireTime});
-                console.log("Login success. Token: " + token);
-                res[0].accessToken = token;
-                result(null, res[0]);
-                return;
-            }else{
-                console.log("Password not match");
-                result({kind: "invalid_pass"}, null);
-                return;
-            }
-        }
+        // if(res.length){
+        //     const validPassword = bcrypt.compareSync(account.password, res[0].password);
+        //     if(validPassword){
+        //         const token = jwt.sign({id: res.insertId}, scKey.secret, {expiresIn: expireTime});
+        //         console.log("Login success. Token: " + token);
+        //         res[0].accessToken = token;
+        //         result(null, res[0]);
+        //         return;
+        //     }else{
+        //         console.log("Password not match");
+        //         result({kind: "invalid_pass"}, null);
+        //         return;
+        //     }
+        // }
         result({kind: "not_found"}, null);
     });
 };
 
-User.getAllRecords = (result)=>{
-    sql.query("SELECT * FROM users", (err, res)=>{
+author.getAllRecords = (result)=>{
+    sql.query("SELECT * FROM authors", (err, res)=>{
         if(err){
             console.log("Query err: " + err);
             result(err,null);
@@ -80,7 +78,7 @@ User.getAllRecords = (result)=>{
 };
 //const, var, let => function scope
 const removeOldImage = (id, result) => {
-    sql.query("SELECT * FROM users WHERE id=?", [id], (err, res)=>{
+    sql.query("SELECT * FROM authors WHERE id=?", [id], (err, res)=>{
         if(err){
             console.log("error:" + err);
             result(err, null);
@@ -111,10 +109,10 @@ const removeOldImage = (id, result) => {
     });
 };
 
-User.updateUser = (id, data, result)=>{
+author.updateUser = (id, data, result)=>{
     removeOldImage(id);
-    sql.query("UPDATE users SET fullname=?, email=?, img=? WHERE id=?", 
-    [data.fullname, data.email, data.img, id], (err, res)=>{
+    sql.query("UPDATE authors SET name=?, description=?, photo=?,dob=? book_id=? WHERE id=?", 
+    [data.name, data.description, data.photo, data.dob, id], (err, res)=>{
         if(err){
             console.log("Error: " + err);
             result(err, null);
@@ -125,14 +123,14 @@ User.updateUser = (id, data, result)=>{
             result({kind: "not_found"}, null);
             return;
         }
-        console.log("Update user: " + {id: id, ...data});
+        console.log("Update author: " + {id: id, ...data});
         result(null, {id: id, ...data});
         return;
     });
 };
-User.removeUser = (id, result)=>{
+author.removeUser = (id, result)=>{
     removeOldImage(id);
-    sql.query("DELETE FROM users WHERE id=?", [id], (err, res)=>{
+    sql.query("DELETE FROM authors WHERE id=?", [id], (err, res)=>{
         if(err){
             console.log("Query error: " + err);
             result(err, null);
@@ -142,8 +140,8 @@ User.removeUser = (id, result)=>{
             result({kind: "not_found"}, null);
             return;
         }
-        console.log("Deleted user id: " + id);
+        console.log("Deleted author id: " + id);
         result(null, {id: id});
     } );
 };
-module.exports = User;
+module.exports = author;

@@ -1,9 +1,10 @@
 const sql = require('./db');
 
 const Review = function(review){
-    this.book = review.book;
-    this.score = review.score;
-    this.review = review.review;
+    this.customer_id = review.customer_id;
+    this.book_id = review.book_id;
+    this.review = review.review
+    this.date = review.date;
 }
 
 Review.create = (newReview, result) => {
@@ -29,7 +30,7 @@ Review.getAll = (result) => {
 };
 
 Review.updateById = (id, data, result) => {
-    sql.query('UPDATE review SET bookId=?, score=?, review=? WHERE id=?', [data.book, data.score, data.review, id], (err, res) => {
+    sql.query('UPDATE review SET customer_id=?, book_id=?, review=? date=? WHERE id=?', [data.customer_id, data.book_id, data.review, data.date, id], (err, res) => {
         if (err) {
             console.log('Error:', err);
             result(err, null);

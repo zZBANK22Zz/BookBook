@@ -20,6 +20,8 @@ require("./app/routes/user.routes")(app);
 require("./app/routes/file.routes")(app);
 require("./app/routes/book.routes")(app);
 require('./app/routes/review.routes')(app);
+require("./app/routes/author.routes")(app);
+require("./app/routes/rental.routes")(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, ()=>{

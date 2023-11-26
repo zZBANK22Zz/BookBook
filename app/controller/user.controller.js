@@ -31,7 +31,8 @@ const createNewUser = (req, res)=>{
         email: req.body.email,
         username: req.body.username,
         password: bcrypt.hashSync(req.body.password, salt),
-        img: req.body.img
+        img: req.body.img,
+        role: req.body.role
     });
     User.create(userObj, (err, data)=>{
         if(err){
@@ -40,13 +41,47 @@ const createNewUser = (req, res)=>{
     });
 };
 
+
+// this is a login 
+
+// from chat 1st time 
+// const login = (async, (req, res)=>{
+//     try {
+//         const { username, password } = req.body;
+    
+//         const selectUser = 'SELECT * FROM users WHERE username = ?';
+//         db.query(selectUser, [username], async (err, results) => {
+//           if (err) {
+//             console.error('Error fetching user:', err);
+//             res.status(500).json({ error: 'Internal server error' });
+//           } else if (results.length > 0) {
+//             const user = results[0];
+//             if (await bcrypt.compare(password, user.password)) {
+//               const token = jwt.sign({ username: user.username, role: user.role }, 'secret_key', { expiresIn: '1h' });
+//               res.status(200).json({ token });
+//             } else {
+//               res.status(401).json({ message: 'Invalid credentials' });
+//             }
+//           } else {
+//             res.status(401).json({ message: 'Invalid credentials' });
+//           }
+//         });
+//       } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Internal server error' });
+//       }
+//     });
+
+
+// from my code
 const login = (req, res)=>{
     if(!req.body){
         res.status(400).send({message: "Content can not be empty."});
     }
     const acc = new User({
         username: req.body.username,
-        password: req.body.password
+        password: req.body.password,
+        role:     req.body.role
     });
     User.loginModel(acc, (err, data)=>{
         if(err){
@@ -60,7 +95,39 @@ const login = (req, res)=>{
             }
         }else res.send(data);
     });
+
 };
+
+// from chat 2 
+// const login = (req, res) => {
+//     if (!req.body) {
+//       res.status(400).send({ message: "Content can not be empty." });
+//       return;
+//     }
+  
+//     const { username, password } = req.body;
+  
+//     User.loginModel(username, (err, user) => {
+//       if (err) {
+//         if (err.kind == "not_found") {
+//           res.status(401).send({ message: "Not found " + username });
+//         } else if (err.kind == "invalid_pass") {
+//           res.status(401).send({ message: "Invalid Password" });
+//         } else {
+//           res.status(500).send({ message: "Query error." });
+//         }
+//       } else {
+//         bcrypt.compare(password, user.password, (bcryptErr, result) => {
+//           if (bcryptErr || !result) {
+//             res.status(401).json({ message: 'Invalid credentials' });
+//           } else {
+//             const token = jwt.sign({ username, role: user.role }, 'secret_key', { expiresIn: '1h' });
+//             res.status(200).json({ token, role: user.role });
+//           }
+//         });
+//       }
+//     });
+//   };
 
 const getAllUsers = (req,res)=>{
     User.getAllRecords((err, data)=>{
@@ -77,6 +144,8 @@ const updateUserCtrl = (req, res)=>{
     const data = {
         fullname: req.body.fullname,
         email: req.body.email,
+        username: req.body.username,
+        password: req.body.password,
         img: req.body.img
     };
     User.updateUser(req.params.id, data, (err, result)=>{

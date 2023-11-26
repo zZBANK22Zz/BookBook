@@ -63,7 +63,7 @@ const createBook = (req, res) => {
             title : req.body.title,
             language : req.body.language,
             publication_date : req.body.publication_date,
-            author_id : req.body.author_id,
+            author_id : req.id,
             price : req.body.price,
             img : req.body.img,
             edition : req.body.edition,

@@ -6,9 +6,15 @@ const createReview = (req, res) => {
     }
 
     const newReview = new Review({
-        book: req.body.book,
-        score: req.body.score,
+        customer_id: req.body.customer_id,
+        book_id: req.body.book_id,
         review: req.body.review,
+        date: req.body.date
+        
+        // this.customer_id = review.customer_id;
+        // this.book_id = review.book_id;
+        // this.review = review.review
+        // this.date = review.date;
     });
 
     Review.create(newReview, (err, data) => {

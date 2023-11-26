@@ -11,5 +11,6 @@ const verifyToken = (req, res, next)=>{
         next();
     });
 };
+// const checkRole = (userrole, (err, user));
 
 module.exports = verifyToken;
